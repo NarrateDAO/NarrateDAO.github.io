@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3治理效率信息图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F0F4F8; /* Light blue-gray background */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Default max-width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+            }
+        }
+        @media (min-width: 1024px) { /* lg breakpoint */
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-title {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            color: #1A2E4C; /* Dark Blue */
+            margin-bottom: 1.5rem; /* mb-6 */
+            text-align: center;
+            padding-top: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #4A90E2; /* Accent Blue */
+            display: inline-block;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+        }
+        .card-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #2C3E50; /* Dark Slate Blue */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .card-text {
+            font-size: 1rem; /* text-base */
+            color: #566573; /* Slate Gray */
+            line-height: 1.75; /* leading-relaxed */
+        }
+        .big-number {
+            font-size: 3rem; /* text-5xl */
+            font-weight: 700; /* font-bold */
+            color: #4A90E2; /* Accent Blue */
+            display: block;
+            text-align: center;
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .icon-placeholder { /* For Unicode icons or styled text */
+            font-size: 2.5rem;
+            color: #4A90E2; /* Accent Blue */
+            margin-right: 0.75rem; /* mr-3 */
+            display: inline-block;
+        }
+        .flowchart-step {
+            background-color: #EBF5FB; /* Light Accent Blue */
+            border: 2px solid #AED6F1; /* Lighter Accent Blue */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            text-align: center;
+            color: #1A2E4C; /* Dark Blue */
+            font-weight: 500; /* font-medium */
+        }
+        .flowchart-arrow {
+            font-size: 2rem; /* text-3xl */
+            color: #4A90E2; /* Accent Blue */
+            margin: 0 0.5rem; /* mx-2 */
+            align-self: center;
+        }
+        .nav-item {
+            padding: 0.5rem 1rem;
+            color: #FFFFFF;
+            background-color: #2C3E50; /* Dark Slate Blue */
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            background-color: #4A90E2; /* Accent Blue */
+        }
+
+        /* Chosen Palette: "Professional & Calm Blues" (Conceptual - using blues and grays)
+           Primary Text: #1A2E4C (Dark Blue)
+           Secondary Text: #566573 (Slate Gray)
+           Background: #F0F4F8 (Light Blue-Gray)
+           Card Background: #FFFFFF (White)
+           Accent 1: #4A90E2 (Bright Blue for charts, icons, highlights)
+           Accent 2: #2C3E50 (Dark Slate Blue for headings, navigation)
+           Chart Colors: [#4A90E2, #85C1E9, #AED6F1, #D6EAF8, #2C3E50]
+        */
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#1A2E4C] text-white py-8 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-bold">Web3治理效率深度解析</h1>
+            <p class="mt-2 text-lg text-gray-300">探索Web3治理的现状、挑战与未来</p>
+        </div>
+    </header>
+
+    <nav class="bg-[#2C3E50] py-3 shadow-sm sticky top-[100px] z-40">
+        <div class="container mx-auto px-6 flex justify-center space-x-2 md:space-x-4 overflow-x-auto">
+            <a href="#introduction" class="nav-item text-sm md:text-base">引言</a>
+            <a href="#challenges" class="nav-item text-sm md:text-base">治理困境</a>
+            <a href="#key-factors" class="nav-item text-sm md:text-base">关键因素</a>
+            <a href="#strategies" class="nav-item text-sm md:text-base">提升之道</a>
+            <a href="#future-outlook" class="nav-item text-sm md:text-base">未来展望</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-8">
+
+        <section id="introduction" class="py-12">
+            <div class="text-center mb-12">
+                <h2 class="section-title">Web3治理：下一代互联网的基石</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="card">
+                    <h3 class="card-title">什么是Web3治理？</h3>
+                    <p class="card-text">Web3代表互联网的演进，核心是去中心化、用户所有权和抗审查性。Web3治理，特别是通过DAO实现的治理，是其核心支柱，旨在通过社区共识驱动项目方向，决定协议升级、资金分配和社区发展。</p>
+                </div>
+                <div class="card text-center bg-[#EBF5FB]">
+                    <h3 class="card-title">核心理念</h3>
+                    <span class="big-number">去中心化决策</span>
+                    <p class="card-text mt-2">社区共识驱动，而非中心化权威。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges" class="py-12 bg-white rounded-xl shadow-xl my-8 p-4 md:p-8">
+            <div class="text-center mb-12">
+                 <h2 class="section-title">治理困境：Web3效率的绊脚石</h2>
+                 <p class="text-lg text-[#566573] mt-4 max-w-3xl mx-auto">尽管Web3治理愿景宏大，实践中却面临诸多效率问题，阻碍项目发展并可能削弱去中心化价值。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">📉</span>
+                        <h3 class="card-title mb-0 ml-2">投票参与度低迷</h3>
+                    </div>
+                    <p class="card-text mb-4">许多代币持有者不参与投票，导致少数活跃用户或“巨鲸”掌握不成比例的权力。</p>
+                    <div class="chart-container h-64 md:h-72">
+                        <canvas id="voterApathyChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center mt-2 text-[#566573]">示意图：活跃投票者比例</p>
+                </div>
+                <div class="card">
+                     <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">⏳</span>
+                        <h3 class="card-title mb-0 ml-2">决策周期缓慢</h3>
+                    </div>
+                    <p class="card-text">提案、讨论、投票和执行的整个流程可能耗时数周甚至数月。</p>
+                    <div class="text-center py-8">
+                        <span class="big-number">&gt;45天</span>
+                        <p class="card-text font-semibold">平均决策周期（示意）</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">⚖️</span>
+                        <h3 class="card-title mb-0 ml-2">中心化风险</h3>
+                    </div>
+                    <p class="card-text mb-4">“巨鲸”主导和核心团队影响力过大，削弱去中心化程度。</p>
+                     <div class="chart-container h-64 md:h-72">
+                        <canvas id="centralizationRiskChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center mt-2 text-[#566573]">示意图：影响力分布</p>
+                </div>
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">❓</span>
+                        <h3 class="card-title mb-0 ml-2">信息不对称</h3>
+                    </div>
+                    <p class="card-text">复杂提案难以被普通社区成员充分理解，导致盲目投票或不投票。</p>
+                </div>
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">💸</span>
+                        <h3 class="card-title mb-0 ml-2">激励机制不足</h3>
+                    </div>
+                    <p class="card-text">参与治理的成本（时间、精力、Gas费）可能高于潜在收益，缺乏动力。</p>
+                </div>
+                 <div class="card">
+                    <div class="flex items-center mb-3">
+                        <span class="icon-placeholder">👥</span>
+                        <h3 class="card-title mb-0 ml-2">缺乏专业性与执行力</h3>
+                    </div>
+                    <p class="card-text">社区投票可能缺乏专业知识，且决策的执行力有时不如中心化团队。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="key-factors" class="py-12">
+            <div class="text-center mb-12">
+                <h2 class="section-title">效率密码：解锁高效治理的关键因素</h2>
+                <p class="text-lg text-[#566573] mt-4 max-w-3xl mx-auto">多个关键因素共同影响着Web3治理的效率和去中心化程度。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <h3 class="card-title">代币分配与质押</h3>
+                    <p class="card-text">初始分配、质押要求和投票权重直接影响去中心化程度。过于集中或分散都可能带来问题。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">投票机制设计</h3>
+                    <p class="card-text">简单多数、二次方投票、信念投票、流动民主等不同机制各有优劣，影响效率和公平性。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">提案与讨论流程</h3>
+                    <p class="card-text">清晰、透明、易于访问的提案提交、讨论和修改流程是高效治理的基础。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">社区参与度与教育</h3>
+                    <p class="card-text">活跃、知情、愿意参与的社区是根本。有效的沟通、教育和用户友好界面至关重要。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">工具与基础设施</h3>
+                    <p class="card-text">完善的投票平台、提案管理系统、数据分析仪表板能降低参与门槛，提高效率。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">争议解决机制</h3>
+                    <p class="card-text">明确的争议解决流程（如仲裁）能防止治理在出现分歧时陷入停滞。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategies" class="py-12 bg-white rounded-xl shadow-xl my-8 p-4 md:p-8">
+            <div class="text-center mb-12">
+                <h2 class="section-title">提升之道：构建高效治理框架的策略</h2>
+                <p class="text-lg text-[#566573] mt-4 max-w-3xl mx-auto">采用多方面策略可以显著提升Web3治理的效率和包容性。</p>
+            </div>
+            <div class="space-y-10">
+                <div class="card">
+                    <h3 class="card-title">1. 激励机制优化</h3>
+                    <ul class="list-disc list-inside card-text space-y-2">
+                        <li><span class="font-semibold text-[#4A90E2]">投票奖励：</span>对参与投票者给予Gas费报销或额外代币。</li>
+                        <li><span class="font-semibold text-[#4A90E2]">贡献者激励：</span>奖励高质量提案者、积极参与讨论和执行决策者。</li>
+                        <li><span class="font-semibold text-[#4A90E2]">声誉系统：</span>基于链上行为建立声誉，赋予高声誉用户更大权重。</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">2. 灵活的投票与委托机制</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="p-4 bg-[#EBF5FB] rounded-lg">
+                            <h4 class="font-semibold text-lg text-[#1A2E4C] mb-2">流动民主与委托</h4>
+                            <p class="text-sm text-[#566573]">允许用户将投票权委托给专家或社区代表，提高专业性，减轻个体负担。</p>
+                        </div>
+                        <div class="p-4 bg-[#EBF5FB] rounded-lg">
+                            <h4 class="font-semibold text-lg text-[#1A2E4C] mb-2">信念投票</h4>
+                            <p class="text-sm text-[#566573]">投票权重随时间累积，鼓励长期参与和深思熟虑的决策。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">3. 优化提案与决策流程</h3>
+                    <p class="card-text mb-6">通过分层治理、设立子DAO/工作组、链下信号与链上执行结合、以及提供标准化提案模板等方式优化流程。</p>
+                    <div class="flex flex-col md:flex-row items-stretch justify-around space-y-4 md:space-y-0 md:space-x-2">
+                        <div class="flowchart-step flex-1">提案发起</div>
+                        <div class="flowchart-arrow hidden md:block">➡️</div>
+                        <div class="flowchart-arrow block md:hidden self-center transform rotate-90">➡️</div>
+                        <div class="flowchart-step flex-1">社区讨论 (链下信号)</div>
+                        <div class="flowchart-arrow hidden md:block">➡️</div>
+                        <div class="flowchart-arrow block md:hidden self-center transform rotate-90">➡️</div>
+                        <div class="flowchart-step flex-1">正式投票 (链上/链下)</div>
+                        <div class="flowchart-arrow hidden md:block">➡️</div>
+                        <div class="flowchart-arrow block md:hidden self-center transform rotate-90">➡️</div>
+                        <div class="flowchart-step flex-1">结果执行</div>
+                    </div>
+                     <p class="text-sm text-center mt-4 text-[#566573]">示意图：简化的提案决策流程</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">4. 增强社区参与与教育</h3>
+                     <ul class="list-disc list-inside card-text space-y-2">
+                        <li><span class="font-semibold text-[#4A90E2]">用户友好界面：</span>开发直观易用的治理界面。</li>
+                        <li><span class="font-semibold text-[#4A90E2]">教育资源：</span>举办研讨会、发布科普文章。</li>
+                        <li><span class="font-semibold text-[#4A90E2]">活跃社区论坛：</span>鼓励开放讨论和思想碰撞。</li>
+                        <li><span class="font-semibold text-[#4A90E2]">治理大使计划：</span>培养社区治理引导者。</li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3 class="card-title">5. 引入专业化与问责制</h3>
+                    <p class="card-text">在特定领域引入由社区选举或认可的专业委员会或核心贡献者，负责日常运营和技术决策，并接受社区监督。同时建立绩效评估与问责机制。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="future-outlook" class="py-12">
+            <div class="text-center mb-12">
+                <h2 class="section-title">未来展望：Web3治理的星辰大海</h2>
+                <p class="text-lg text-[#566573] mt-4 max-w-3xl mx-auto">Web3治理的效率提升是一个持续演进的过程，技术创新、社区建设和机制设计将协同推动其发展。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="card">
+                    <h3 class="card-title">持续的技术创新</h3>
+                    <p class="card-text mb-4">零知识证明（隐私投票）、更健壮的链上声誉系统、AI辅助治理（提案总结、风险分析）等技术将发挥重要作用。</p>
+                    <div class="chart-container h-72 md:h-80">
+                        <canvas id="techInnovationChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center mt-2 text-[#566573]">示意图：新兴治理技术采纳趋势</p>
+                </div>
+                <div class="space-y-6">
+                    <div class="card">
+                        <h3 class="card-title">治理框架的标准化与模块化</h3>
+                        <p class="card-text">推动标准化和模块化，使项目能灵活选择和组合治理组件，适应自身需求。</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">平衡去中心化与效率</h3>
+                        <p class="card-text">核心原则是在不牺牲去中心化核心价值的前提下，尽可能提高决策和执行效率。</p>
+                    </div>
+                     <div class="card">
+                        <h3 class="card-title">增强法律与监管框架的适应性</h3>
+                        <p class="card-text">随着Web3治理的成熟，需要与传统法律和监管框架进行更有效的衔接，确保合规性并降低风险。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="py-16 bg-[#1A2E4C] text-white rounded-xl shadow-xl mt-8">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-6">结论：迈向更高效的Web3治理</h2>
+                <p class="text-lg max-w-3xl mx-auto leading-relaxed text-gray-300">Web3治理效率是Web3生态系统能否实现其全部潜力的关键。通过优化激励、灵活投票、精简流程、社区教育及技术探索，我们可以构建一个更具响应性、包容性和韧性的去中心化治理未来，加速Web3项目创新，并为全球组织协作提供新范式。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 mt-12 border-t border-gray-300">
+        <p class="text-sm text-[#566573]">&copy; 2025 Web3治理效率信息图。保留所有权利。</p>
+        <p class="text-xs text-gray-400 mt-1">本信息图内容基于“Web3治理效率白皮书”。</p>
+    </footer>
+
+    <script>
+        const CHART_COLORS = {
+            blue: '#4A90E2',
+            lightBlue: '#85C1E9',
+            lighterBlue: '#AED6F1',
+            lightestBlue: '#D6EAF8',
+            darkBlue: '#2C3E50',
+            gray: '#B0BEC5'
+        };
+
+        function processLabels(labels, maxLength = 16) {
+            return labels.map(label => {
+                if (typeof label === 'string' && label.length > maxLength) {
+                    const words = label.split(' ');
+                    const newLabel = [];
+                    let currentLine = '';
+                    words.forEach(word => {
+                        if ((currentLine + word).length > maxLength) {
+                            newLabel.push(currentLine.trim());
+                            currentLine = word + ' ';
+                        } else {
+                            currentLine += word + ' ';
+                        }
+                    });
+                    newLabel.push(currentLine.trim());
+                    return newLabel;
+                }
+                return label;
+            });
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            if (!item) return '';
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: CHART_COLORS.darkBlue,
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: 'rgba(44, 62, 80, 0.9)', // Dark Slate Blue
+                    titleColor: '#FFFFFF',
+                    bodyColor: '#EAEAEA',
+                    padding: 10,
+                    cornerRadius: 4
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { 
+                        color: CHART_COLORS.darkBlue,
+                        font: { size: 11 }
+                    },
+                    grid: { display: false }
+                },
+                y: {
+                    ticks: { 
+                        color: CHART_COLORS.darkBlue,
+                        font: { size: 11 }
+                    },
+                    grid: { color: CHART_COLORS.lighterBlue, borderDash: [2, 3] },
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Chart 1: Voter Apathy
+        const voterApathyCtx = document.getElementById('voterApathyChart')?.getContext('2d');
+        if (voterApathyCtx) {
+            new Chart(voterApathyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: processLabels(['活跃投票者', '未参与投票者']),
+                    datasets: [{
+                        label: '投票参与度',
+                        data: [20, 80], // Hypothetical data
+                        backgroundColor: [CHART_COLORS.blue, CHART_COLORS.lightestBlue],
+                        borderColor: [CHART_COLORS.blue, CHART_COLORS.lightestBlue],
+                        borderWidth: 1,
+                        hoverOffset: 4
+                    }]
+                },
+                options: { ...defaultChartOptions, cutout: '60%' }
+            });
+        }
+
+        // Chart 2: Centralization Risk
+        const centralizationRiskCtx = document.getElementById('centralizationRiskChart')?.getContext('2d');
+        if (centralizationRiskCtx) {
+            new Chart(centralizationRiskCtx, {
+                type: 'bar',
+                data: {
+                    labels: processLabels(['巨鲸账户', '核心团队', '普通社区成员']),
+                    datasets: [{
+                        label: '治理影响力（示意）',
+                        data: [60, 25, 15], // Hypothetical data
+                        backgroundColor: [CHART_COLORS.blue, CHART_COLORS.lightBlue, CHART_COLORS.lighterBlue],
+                        borderColor: CHART_COLORS.darkBlue,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...defaultChartOptions, indexAxis: 'y' }
+            });
+        }
+
+        // Chart 3: Tech Innovation Adoption
+        const techInnovationCtx = document.getElementById('techInnovationChart')?.getContext('2d');
+        if (techInnovationCtx) {
+            new Chart(techInnovationCtx, {
+                type: 'line',
+                data: {
+                    labels: processLabels(['2024', '2025', '2026', '2027', '2028']),
+                    datasets: [
+                        {
+                            label: '零知识证明应用',
+                            data: [10, 25, 45, 70, 90], // Hypothetical
+                            borderColor: CHART_COLORS.blue,
+                            backgroundColor: CHART_COLORS.blue + '33', // Add alpha for area fill
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '链上声誉系统',
+                            data: [5, 15, 35, 60, 80], // Hypothetical
+                            borderColor: CHART_COLORS.lightBlue,
+                            backgroundColor: CHART_COLORS.lightBlue + '33',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'AI辅助治理',
+                            data: [2, 10, 25, 50, 75], // Hypothetical
+                            borderColor: CHART_COLORS.darkBlue,
+                            backgroundColor: CHART_COLORS.darkBlue + '33',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: defaultChartOptions
+            });
+        }
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 160; // Adjust for sticky headers
+                     window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
